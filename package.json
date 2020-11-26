@@ -1,0 +1,27 @@
+{
+  "name": "staticimages",
+  "version": "1.0.0",
+  "description": "image store",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Trinyoung/staticImages.git"
+  },
+  "keywords": [
+    "image"
+  ],
+  "author": "trinyoung",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Trinyoung/staticImages/issues"
+  },
+  "homepage": "https://github.com/Trinyoung/staticImages#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "multer": "^1.4.2"
+  }
+}
