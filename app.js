@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-26 18:03:18
- * @LastEditTime: 2020-11-26 18:59:56
+ * @LastEditTime: 2020-11-30 10:17:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \staticImages\app.js
@@ -13,13 +13,13 @@ const path = require('path');
 const multer = require('multer');
 const url = require('url');
 // app.use('/upload');
-app.use(express.static(path.join(path.resolve('.'), '/static')));
+app.use(express.static(path.join(__dirname, '/static')));
 app.post('/api/upload/file', uploadFile);
 // express.static()
 async function uploadFile (req, res) {
     let storage = multer.diskStorage({
         destination: function (req, file, cb) {
-            cb(null, path.join(path.resolve('.'), '/static/uploads'));
+            cb(null, path.join(__dirname, '/static/uploads'));
         },
         //上传的文件以 时间(毫秒级) + 原来的名字命名
         filename: function (req, file, cb) {
