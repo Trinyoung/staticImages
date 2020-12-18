@@ -43,8 +43,8 @@ async function uploadFile (req, res) {
         if (err) {
             return res.send({code: '999', err: err.message});
         }
-        const fullUrl = req.protocol + '://' + req.get('host')
-        res.send({code: '000', result: `${fullUrl}/uploads/${req.file.filename}`});
+        // const fullUrl = req.protocol + '://' + req.get('host')
+        res.send({code: '000', result: `/uploads/${req.file.filename}`});
     });
 }
 app.listen('3000', ()=> {
