@@ -1,25 +1,23 @@
 /*
  * @Author: your name
  * @Date: 2020-11-26 18:03:18
- * @LastEditTime: 2020-12-21 08:55:55
+ * @LastEditTime: 2020-12-21 10:32:12
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \staticImages\app.js
  */
 const express = require('express');
 const app = express();
-const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
-const url = require('url');
-// app.use('/upload');
+const { storeUrl, resBaseUrl } = require(`./config/config.${process.env.NODE_ENV}.js`);
 app.use(express.static(path.join(__dirname, '/static')));
 app.post('/api/upload/file', uploadFile);
-// express.static()
+console.log(process.env.NODE_ENV, '环境变量')
 async function uploadFile (req, res) {
     let storage = multer.diskStorage({
         destination: function (req, file, cb) {
-            cb(null, path.join(__dirname, '/static/uploads'));
+            cb(null, storeUrl);
         },
         //上传的文件以 时间(毫秒级) + 原来的名字命名
         filename: function (req, file, cb) {
@@ -44,7 +42,7 @@ async function uploadFile (req, res) {
             return res.send({code: '999', err: err.message});
         }
         // const fullUrl = req.protocol + '://' + req.get('host')
-        res.send({code: '000', result: `/images/uploads/${req.file.filename}`});
+        res.send({code: '000', result: `/${resBaseUrl}/${req.file.filename}`});
     });
 }
 app.listen('3000', ()=> {
