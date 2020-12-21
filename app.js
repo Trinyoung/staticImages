@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-26 18:03:18
- * @LastEditTime: 2020-12-21 10:32:12
+ * @LastEditTime: 2020-12-21 14:18:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \staticImages\app.js
@@ -42,7 +42,7 @@ async function uploadFile (req, res) {
             return res.send({code: '999', err: err.message});
         }
         // const fullUrl = req.protocol + '://' + req.get('host')
-        res.send({code: '000', result: `/${resBaseUrl}/${req.file.filename}`});
+        res.send({code: '000', result: `${resBaseUrl}/${req.file.filename}`});
     });
 }
 app.listen('3000', ()=> {
