@@ -13,6 +13,9 @@ const multer = require('multer');
 const { storeUrl, resBaseUrl } = require(`./config/config.${process.env.NODE_ENV}.js`);
 app.use(express.static(path.join(__dirname, '/static')));
 app.post('/api/upload/file', uploadFile);
+app.get('/api/hello', function (req, res) {
+    res.send('hello world! docker images');
+});
 console.log(process.env.NODE_ENV, '环境变量')
 async function uploadFile (req, res) {
     let storage = multer.diskStorage({
