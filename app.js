@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-26 18:03:18
- * @LastEditTime: 2021-04-25 13:07:02
+ * @LastEditTime: 2021-04-25 13:51:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \staticImages\app.js
@@ -59,6 +59,8 @@ async function uploadFile(req, res) {
 async function checkAuth(req, res, next) {
     console.log('hello')
     let authorization = req.headers.authorization;
+    // console.log(config.get)
+    console.log(authorization, '=============>')
     if (!authorization) {
         return res.send({ code: '401', message: '没有登录！' });
     }
