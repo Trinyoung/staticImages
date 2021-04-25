@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-26 18:03:18
- * @LastEditTime: 2021-04-25 12:59:08
+ * @LastEditTime: 2021-04-25 13:07:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \staticImages\app.js
@@ -12,7 +12,9 @@ const multer = require('multer');
 const cookieParser = require('cookie-parser');
 const moment = require('moment');
 const jwt = require('jsonwebtoken');
-const { storeUrl, resBaseUrl } = require(`./config/config.${process.env.NODE_ENV}.js`);
+const config = require('config');
+// const { storeUrl, resBaseUrl } = require(`./config/config.${process.env.NODE_ENV}.js`);
+// const { storeUrl, resBaseUrl } = config.get();
 const { cacheHelper } = require('./cacheHelper');
 
 const app = express();
@@ -26,7 +28,7 @@ app.get('/api/hello', checkAuth, function (req, res) {
 async function uploadFile(req, res) {
     let storage = multer.diskStorage({
         destination: function (req, file, cb) {
-            cb(null, storeUrl);
+            cb(null, config.get('storeUrl'));
         },
         //上传的文件以 时间(毫秒级) + 原来的名字命名
         filename: function (req, file, cb) {
@@ -51,7 +53,7 @@ async function uploadFile(req, res) {
             return res.send({ code: '999', err: err.message });
         }
         // const fullUrl = req.protocol + '://' + req.get('host')
-        res.send({ code: '000', result: `${resBaseUrl}/${req.file.filename}` });
+        res.send({ code: '000', result: `${config.get('resBaseUrl')}/${req.file.filename}` });
     });
 }
 async function checkAuth(req, res, next) {
@@ -60,7 +62,7 @@ async function checkAuth(req, res, next) {
     if (!authorization) {
         return res.send({ code: '401', message: '没有登录！' });
     }
-    authorization = authorization.split(' ')[1]
+    authorization = authorization.split(' ')[1];
     const authId = req.cookies.nvwaId;
     try {
         const playLoad = jwt.verify(authorization, authId);
