@@ -1,23 +1,29 @@
 /*
  * @Author: your name
  * @Date: 2020-11-26 18:03:18
- * @LastEditTime: 2020-12-21 14:18:06
+ * @LastEditTime: 2021-04-25 12:59:08
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \staticImages\app.js
  */
 const express = require('express');
-const app = express();
 const path = require('path');
 const multer = require('multer');
+const cookieParser = require('cookie-parser');
+const moment = require('moment');
+const jwt = require('jsonwebtoken');
 const { storeUrl, resBaseUrl } = require(`./config/config.${process.env.NODE_ENV}.js`);
+const { cacheHelper } = require('./cacheHelper');
+
+const app = express();
 app.use(express.static(path.join(__dirname, '/static')));
-app.post('/api/upload/file', uploadFile);
-app.get('/api/hello', function (req, res) {
+app.use(cookieParser());
+app.post('/api/upload/file', checkAuth, uploadFile);
+app.get('/api/hello', checkAuth, function (req, res) {
     res.send('hello world! docker images');
 });
-console.log(process.env.NODE_ENV, '环境变量')
-async function uploadFile (req, res) {
+// console.log(process.env.NODE_ENV, '环境变量')
+async function uploadFile(req, res) {
     let storage = multer.diskStorage({
         destination: function (req, file, cb) {
             cb(null, storeUrl);
@@ -42,12 +48,48 @@ async function uploadFile (req, res) {
 
     uploadSingle(req, res, async (err) => {
         if (err) {
-            return res.send({code: '999', err: err.message});
+            return res.send({ code: '999', err: err.message });
         }
         // const fullUrl = req.protocol + '://' + req.get('host')
-        res.send({code: '000', result: `${resBaseUrl}/${req.file.filename}`});
+        res.send({ code: '000', result: `${resBaseUrl}/${req.file.filename}` });
     });
 }
-app.listen('3000', ()=> {
+async function checkAuth(req, res, next) {
+    console.log('hello')
+    let authorization = req.headers.authorization;
+    if (!authorization) {
+        return res.send({ code: '401', message: '没有登录！' });
+    }
+    authorization = authorization.split(' ')[1]
+    const authId = req.cookies.nvwaId;
+    try {
+        const playLoad = jwt.verify(authorization, authId);
+        const now = moment().unix();
+        if (now >= playLoad.exp) {
+            cacheHelper.del('userInfo', authorization, function (err) {
+                if (err) {
+                    console.log('删除用户信息出错', err);
+                }
+                console.log(`清除token ${authorization}成功!`);
+            });
+            return res.send({ code: '401' });
+        }
+
+        cacheHelper.get('userInfo', authorization, function (err, result) {
+            if (err) {
+                console.log(`获取用户信息出错！`);
+                return res.send({ code: '401', err: '获取用户信息出错！' });
+            }
+            if (!result) return res.send({ code: '401', err: '未找到相关用户信息！' })
+            req.user = JSON.stringify(decodeURIComponent(result));
+            console.log('获取用户信息成功', result);
+            return next();
+        });
+    } catch (err) {
+        console.log('鉴权失败', err);
+        return res.send({ code: '401', err });
+    }
+}
+app.listen('3000', () => {
     console.log('server is listening on port: 3000')
 });

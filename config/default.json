@@ -1,0 +1,9 @@
+{
+    "resBaseUrl": "http://localhost:3000/uploads",
+    "storeUrl": "../static/uploads",
+    "database": {
+        "redis": {
+            "ip": "127.0.0.1"
+        }
+    }
+}

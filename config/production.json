@@ -1,0 +1,9 @@
+{
+    "resBaseUrl": "/images",
+    "storeUrl": "/images",
+    "database": {
+        "redis": {
+            "ip": "127.0.0.1"
+        }
+    }
+}
